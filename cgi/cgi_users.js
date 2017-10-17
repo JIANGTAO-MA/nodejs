@@ -4,12 +4,15 @@
 var mysql = require('../db/mysql');
 var NODE_TABLE = 'users';
 
+var _user;
+
 /**
  * 用户登录
  * @param id
  * @param callback
  */
 var fn_userLogin = function (username,password,callback) {
+    var json = {success:false};
     var promise = new Promise(function (resolve, reject) {
         mysql.connection.query(
             'SELECT * FROM '+NODE_TABLE+' where username = "' + username + '" and password = "'+password+'"',
@@ -28,19 +31,20 @@ var fn_userLogin = function (username,password,callback) {
             }
         );
     });
-
     promise.then(function (value) {
         //成功
         if(value.length == 1){
-            callback(true);
-            return true;
+            json.success = true;
+            json.user = value;
+            callback(json);
+            return;
         }
-        callback(false);
-        return false;
+        json.errMessage = '用户不存在';
+        callback(json);
     }, function (value) {
         //失败
-        callback('登录失败');
-        console.log('登录失败');
+        json.errMessage = '登录失败';
+        callback(json);
     });
 
 };

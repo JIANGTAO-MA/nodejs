@@ -44,7 +44,9 @@ var login = new Vue({
             var password = this.loginForm.password;
             console.log(username,password);
             $.get('/cgi/user/login?username='+username+'&password='+password, function (data) {
-                console.log(data);
+                if(data.success){
+                    window.location.href = '/users'
+                }
             });
             //this.$refs[form].validate(function (valid) {
             //    if(valid){

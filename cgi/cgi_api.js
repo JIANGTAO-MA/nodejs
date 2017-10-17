@@ -11,9 +11,7 @@ var cgi_users = require('./cgi_users');
  */
 router.get('/user/login', function(req, res, next) {
     cgi_users.login(req.query.username,req.query.password, function (rs) {
-        if(rs){
-            res.render('users', { title: '工作台' });
-        }
+        res.send(rs);
     });
 });
 
@@ -22,7 +20,7 @@ router.get('/user/login', function(req, res, next) {
  */
 router.get('/user/get', function(req, res, next) {
     cgi_users.getUser(req.query.id, function (rs) {
-        res.send(JSON.stringify(rs));
+        res.send(rs);
     });
 });
 
