@@ -10,9 +10,19 @@ var cgi_users = require('./cgi_users');
  * 用户登录
  */
 router.get('/user/login', function(req, res, next) {
-    res.send('respond with a resource');
-    cgi_users.getUser(2, function (rs) {
+    cgi_users.login(req.query.username,req.query.password, function (rs) {
+        if(rs){
+            res.render('users', { title: '工作台' });
+        }
+    });
+});
 
+/**
+ * 查询用户
+ */
+router.get('/user/get', function(req, res, next) {
+    cgi_users.getUser(req.query.id, function (rs) {
+        res.send(JSON.stringify(rs));
     });
 });
 

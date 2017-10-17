@@ -1,8 +1,49 @@
 /**
  * Created by majiangtao on 2017/9/21.
  */
-var conn = require('../db/mysql');
+var mysql = require('../db/mysql');
 var NODE_TABLE = 'users';
+
+/**
+ * 用户登录
+ * @param id
+ * @param callback
+ */
+var fn_userLogin = function (username,password,callback) {
+    var promise = new Promise(function (resolve, reject) {
+        mysql.connection.query(
+            'SELECT * FROM '+NODE_TABLE+' where username = "' + username + '" and password = "'+password+'"',
+            function selectCb(err, results, fields) {
+                if (err) {
+                    throw err;
+                }
+                if(results)
+                {
+                    resolve(results);
+                    for(var i = 0; i < results.length; i++)
+                    {
+                        console.log("%d\t%s\t%s", results[i].id, results[i].username, results[i].password);
+                    }
+                }
+            }
+        );
+    });
+
+    promise.then(function (value) {
+        //成功
+        if(value.length == 1){
+            callback(true);
+            return true;
+        }
+        callback(false);
+        return false;
+    }, function (value) {
+        //失败
+        callback('登录失败');
+        console.log('登录失败');
+    });
+
+};
 
 /***
  * 查询用户
@@ -10,24 +51,19 @@ var NODE_TABLE = 'users';
  * @param callback
  */
 var fn_getUser = function (id,callback) {
-    console.log('执行查询数据库');
     var promise = new Promise(function (resolve, reject) {
-        console.log('SELECT * FROM '+NODE_TABLE+' where id = '+id);
-        conn.query(
+        mysql.connection.query(
             'SELECT * FROM '+NODE_TABLE+' where id = '+id,
             function selectCb(err, results, fields) {
-                console.log(err,results,fields);
                 if (err) {
                     throw err;
                 }
-
                 if(results)
                 {
-                    callback(results);
                     resolve(results);
                     for(var i = 0; i < results.length; i++)
                     {
-                        console.log("%d\t%s\t%s", results[i].id, results[i].username, results[i].sex);
+                        console.log("%d\t%s\t%s", results[i].id, results[i].username, results[i].password);
                     }
                 }
             }
@@ -38,12 +74,13 @@ var fn_getUser = function (id,callback) {
         //成功
         var rs = {root:[],success:true};
         for(var i=0;i<value.length;i++){
-            rs.root.push(value[i].username)
+            rs.root.push(value[i].id,value[i].username)
         }
-        console.log(rs);
+        callback(rs);
         return rs;
     }, function (value) {
         //失败
+        callback('查询失败');
         console.log('查询失败');
     });
 
@@ -55,7 +92,7 @@ var fn_getUser = function (id,callback) {
  * @param callback
  */
 var fn_addUser = function (param,callback) {
-    conn.query(
+    mysql.connection.query(
         'insert INTO '+NODE_TABLE+'(username,password) VALUES(?,?)',
         param,
         function (err, results, fields) {
@@ -77,7 +114,7 @@ var fn_addUser = function (param,callback) {
  * @param callback
  */
 var fn_delUser = function (id, callback) {
-    conn.query(
+    mysql.connection.query(
         'delete from '+NODE_TABLE+' where id = '+id,
         function (err,results) {
             if(err){
@@ -89,6 +126,7 @@ var fn_delUser = function (id, callback) {
 };
 
 module.exports = {
+    login:fn_userLogin,
     getUser:fn_getUser,
     addUser: fn_addUser,
     delUser:fn_delUser
