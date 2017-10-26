@@ -1,5 +1,36 @@
-.less {
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+@color:#00B7FF;
+@color-copyright:#888888;
+@color-copyright-top:#ccc;
+.center {
+  text-align: center;
+}
+.login {
+  width:400px;
+  margin: auto;
+  p,h1 {
+    .center;
+  }
   a {
-    color: #ffffff;
+    color: @color;
+  }
+  button {
+    width: 100%;
+  }
+  .center;
+}
+.copyRight {
+  border-top: solid 1px @color-copyright-top;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  p {
+    font-size: 12px;
+    color:@color-copyright;
+    .center;
   }
 }
