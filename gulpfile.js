@@ -7,7 +7,7 @@ var uglify = require('gulp-uglify'); //js压缩
 var cssmin = require('gulp-minify-css'); //css压缩
 var htmlmin = require('gulp-minify-html'); //html压缩
 var imagemin = require('gulp-imagemin'); //图片压缩
-var jshint = require('gulp-jshint'); //js代码检查
+//var jshint = require('gulp-jshint'); //js代码检查
 var concat = require('gulp-concat'); //文件合并
 var browserSync = require('browser-sync');
 
@@ -15,6 +15,12 @@ gulp.task('default',['watch'], function () {
     console.log('默认任务');
 });
 
+//图片压缩
+gulp.task('imagemin', function () {
+    gulp.src('public/images/*.*')
+        .pipe(imagemin())
+        .pipe(gulp.dest('build/images'))
+});
 //创建js编译任务，压缩合并
 gulp.task('minify-js', function () {
     gulp.src('public/javascripts/main.js')
@@ -38,8 +44,9 @@ gulp.task('browserSync', function () {
 });
 
 var reload = browserSync.reload;
-gulp.task('watch',['less','minify-js','browserSync'], function () {
+gulp.task('watch',['imagemin','less','minify-js','browserSync'], function () {
     //添加监听事件
+    gulp.watch('public/images/*.*',['imagemin']);
     gulp.watch('public/less/*.less',['less']);
     gulp.watch('public/javascripts/*.js',['minify-js']);
 

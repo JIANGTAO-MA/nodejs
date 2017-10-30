@@ -2,9 +2,10 @@ extends layout
 
 block content
   div(class='login')
-    h1= title
-    p Welcome to #{name}
-    div(id="login")
+    p(class="logo")
+      img(src="/images/logo.png")
+    p(class="description")=description
+    div(id="login" class="login_form_div")
       el-form( :model = "loginForm"  label-width="" )
         el-form-item(label="" prop="username")
           el-input(v-model="loginForm.username" type="text" auto-complete="off" placeholder="输入账号")
