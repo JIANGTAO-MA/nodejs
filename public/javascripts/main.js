@@ -1,10 +1,21 @@
 /**
  * Created by majiangtao on 2017/9/21.
  */
-
-var login = new Vue({
+const store = new Vuex.Store({
+    state:{
+        user_token:0
+    },
+    mutations:{
+        userObj (token) {
+            this.state.user_token = token;
+        }
+    }
+});
+let login = new Vue({
     el:'#login',
+    store,
     data:{
+        userObj:'',
         loginForm:{
             username:'',
             password:''
@@ -31,10 +42,10 @@ var login = new Vue({
         },
         login:{
             username:[{
-                validator: this.validateUsername, trigger: 'blur'
+                //validator: this.validateUsername, trigger: 'blur'
             }],
             password:[{
-                validator: this.validatePassword, trigger: 'blur'
+                //validator: this.validatePassword, trigger: 'blur'
             }]
         }
     },
@@ -43,10 +54,16 @@ var login = new Vue({
             var username = this.loginForm.username;
             var password = this.loginForm.password;
             console.log(username,password);
-            $.get('/cgi/user/login?username='+username+'&password='+password, function (data) {
-                if(data.success){
-                    window.location.href = '/users'
+            this.$http.get('/cgi/user/login?username='+username+'&password='+password).then(response => {
+                this.userObj = response.data;
+                console.log('请求成功',response);
+                console.log('返回结果',response.data);
+                if(this.userObj.success){
+                    console.log('登录成功');
+                    console.log(store.state.token);
                 }
+            }, response => {
+                console.log('请求失败');
             });
             //this.$refs[form].validate(function (valid) {
             //    if(valid){

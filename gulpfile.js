@@ -7,7 +7,9 @@ var uglify = require('gulp-uglify'); //js压缩
 var cssmin = require('gulp-minify-css'); //css压缩
 var htmlmin = require('gulp-minify-html'); //html压缩
 var imagemin = require('gulp-imagemin'); //图片压缩
-//var jshint = require('gulp-jshint'); //js代码检查
+var jshint = require('gulp-jshint'); //js代码检查
+var jslint = require('gulp-jslint'); //js代码检查(比较严格)
+var babel = require('gulp-babel'); //es6转es5
 var concat = require('gulp-concat'); //文件合并
 var browserSync = require('browser-sync');
 
@@ -23,7 +25,12 @@ gulp.task('imagemin', function () {
 });
 //创建js编译任务，压缩合并
 gulp.task('minify-js', function () {
-    gulp.src('public/javascripts/main.js')
+    gulp.src('public/javascripts/*.js')
+        .pipe(babel({
+            presets: ['es2015']
+        }))
+        .pipe(jshint())
+        .pipe(jslint())
         .pipe(uglify())
         .pipe(gulp.dest('build/javascript'));
 });
